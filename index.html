@@ -12,64 +12,29 @@ body {
     min-height:100vh; display:flex; justify-content:center; align-items:center; overflow:hidden;
 }
 .container {
-    background:white; padding:60px 40px; border-radius:30px; max-width:700px; width:90%;
+    background:white; padding:40px; border-radius:30px; max-width:600px; width:90%;
     text-align:center; position:relative; box-shadow:0 20px 60px rgba(0,0,0,0.3);
 }
-h1 { font-size:42px; color:#667eea; margin-bottom:20px; }
-.question { font-size:28px; margin-bottom:40px; font-weight:bold; }
-.gif-container { width:250px; height:250px; margin:0 auto 30px; border-radius:20px; overflow:hidden; border:5px solid #667eea; position:relative; }
+h1 { font-size:36px; color:#667eea; margin:20px 0; }
+.question { font-size:22px; margin-bottom:40px; font-weight:bold; }
+.gif-container { width:200px; height:200px; margin:0 auto; border-radius:20px; overflow:hidden; border:5px solid #667eea; position:relative; }
 .gif-container img { width:100%; height:100%; object-fit:cover; }
 
-.buttons { 
-    display: flex;
-    gap: 30px;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-    height: 100px;
-    margin-top: 40px;
-}
-
 #yesBtn, #noBtn {
-    padding:15px 30px; font-size:22px; border-radius:50px; font-weight:bold; border:none; cursor:pointer;
-    font-family:'Comic Sans MS', cursive; transition: all 0.3s ease;
+    padding:12px 25px; font-size:20px; border-radius:50px; font-weight:bold; border:none; cursor:pointer;
+    font-family:'Comic Sans MS', cursive; position:absolute; transition: all 0.3s ease;
 }
-
 #yesBtn {
     background: linear-gradient(135deg,#667eea 0%,#764ba2 100%);
-    color:white; position: relative;
+    color:white; bottom:20px; left:50%; transform:translateX(-50%);
 }
-
-#yesBtn:hover {
-    transform: scale(1.05);
-    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
-}
-
 #noBtn {
-    background:#ff6b6b; color:white; position: absolute;
+    background:#ff6b6b; color:white; top:0; left:0;
 }
-
 #noBtn:hover { background:#ff5252; }
 
-.success { display:none; text-align:center; animation: popIn 0.6s ease-out; }
-
-@keyframes popIn {
-    0% { transform: scale(0); }
-    100% { transform: scale(1); }
-}
-
-.emoji { font-size:80px; margin-bottom:20px; animation: spin 2s linear infinite; }
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-.success-gif { width:250px; height:250px; margin:20px auto; border-radius:20px; overflow:hidden; border:5px solid #667eea; }
-.success-gif img { width:100%; height:100%; object-fit:cover; }
-
-.success h2 { font-size:48px; color:#667eea; margin:20px 0; }
-.success p { font-size:24px; color:#333; }
+.success { display:none; text-align:center; }
+.emoji { font-size:60px; margin-bottom:20px; }
 </style>
 </head>
 <body>
@@ -77,21 +42,15 @@ h1 { font-size:42px; color:#667eea; margin-bottom:20px; }
     <div class="gif-container" id="gifContainer">
         <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExcXV5eWR6anBsaWN6M3lneHN5dGxxY2t0eXR5N3J2bGNocGd5eTFkdCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/MDJ9IbxxvDUQM/giphy.gif" alt="Cute asking gif">
     </div>
-    <h1>Hey There! 💕</h1>
-    <p class="question">Will you be my valentine? 🥺👉👈</p>
-    <div class="buttons">
-        <button id="yesBtn" onclick="sayYes()">YES! 💖</button>
-        <button id="noBtn" onclick="moveButton()">No 😢</button>
-    </div>
+    <button id="noBtn" onclick="moveButton()">No 😢</button>
+    <h1>Will you be my Valentine? 🥺👉👈</h1>
+    <button id="yesBtn" onclick="sayYes()">YES! 💖</button>
 </div>
 
 <div class="container success" id="successBox">
     <div class="emoji">🎉</div>
     <h2>YAAAY! 🎊</h2>
-    <p>You made me the happiest! 💃🕺</p>
-    <div class="success-gif">
-        <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExM2Q3Ym5xbDN6eHoyc3d5emtxMHk5dGF5cXN5b3Z5Y3hrcHlkdXRkNSZlcD12MV9naWZzX3NlYXJjaCZjdD1n/artj92V8o75VPL7AeQ/giphy.gif" alt="Celebration gif">
-    </div>
+    <p>💃🕺</p>
 </div>
 
 <script>
@@ -100,28 +59,39 @@ let noBtn=document.getElementById('noBtn');
 let gifContainer=document.getElementById('gifContainer');
 
 let attempts=0;
-let yesFontSize=22;
+let yesFontSize=20;
+let angle=0;
 
 function moveButton(){
     attempts++;
 
     // Grow YES button gradually
-    yesFontSize += 5;
+    yesFontSize += 2;
     yesBtn.style.fontSize = yesFontSize + 'px';
-    yesBtn.style.padding = `${15 + attempts*3}px ${30 + attempts*5}px`;
+    yesBtn.style.padding = `${12 + attempts}px ${25 + attempts*2}px`;
 
-    // Move NO button randomly around the screen
-    const maxX = window.innerWidth - noBtn.offsetWidth - 40;
-    const maxY = window.innerHeight - noBtn.offsetHeight - 40;
+    // Orbit NO button around GIF but always **above heading**
+    const rect = gifContainer.getBoundingClientRect();
+    const containerRect = gifContainer.parentElement.getBoundingClientRect();
+    const centerX = rect.left + rect.width/2 - containerRect.left;
+    const centerY = rect.top + rect.height/2 - containerRect.top - 50; // shift upwards to stay above heading
 
-    const randomX = Math.random() * maxX;
-    const randomY = Math.random() * maxY;
+    const radius = rect.width/2 + 20;
+    angle += 45 + Math.random()*20;
+    const rad = angle * Math.PI/180;
 
-    noBtn.style.left = `${randomX}px`;
-    noBtn.style.top = `${randomY}px`;
+    const noX = centerX + radius * Math.cos(rad) - noBtn.offsetWidth/2;
+    const noY = centerY + radius * Math.sin(rad) - noBtn.offsetHeight/2;
 
-    // Change NO button text
-    const texts=['No 😢','Are you sure? 🥺','Really? 😭','Think again! 💔','Please? 🙏','Pretty please? 🥺','Just say yes! 😊','Come on! 💝','You know you want to! 😜'];
+    noBtn.style.left = `${noX}px`;
+    noBtn.style.top = `${Math.min(noY, rect.top - containerRect.top)}px`; // never below heading
+
+    // Shrink NO slightly
+    const scale = Math.max(0.7, 1 - attempts*0.05);
+    noBtn.style.transform = `scale(${scale})`;
+
+    // Change NO text
+    const texts=['No 😢','Are you sure? 🥺','Really? 😭','Think again! 💔','Please? 🙏','Pretty please? 🥺','Just say yes! 😊','Come on! 💝'];
     if(attempts<texts.length) noBtn.innerHTML=texts[attempts];
 }
 
@@ -130,17 +100,14 @@ function sayYes(){
     document.getElementById('successBox').style.display='block';
 }
 
-// Initial position - buttons perfectly aligned at the start
+// initial position for mobile
 window.addEventListener('load', ()=>{
-    const buttonsDiv = document.querySelector('.buttons');
-    const yesRect = yesBtn.getBoundingClientRect();
-    noBtn.style.position = 'static';
-    
-    setTimeout(() => {
-        noBtn.style.position = 'absolute';
-        noBtn.style.left = '10px';
-        noBtn.style.top = '10px';
-    }, 100);
+    const rect = gifContainer.getBoundingClientRect();
+    const containerRect = gifContainer.parentElement.getBoundingClientRect();
+    const centerX = rect.left + rect.width/2 - containerRect.left;
+    const centerY = rect.top + rect.height/2 - containerRect.top - 50;
+    noBtn.style.left = `${centerX - noBtn.offsetWidth/2}px`;
+    noBtn.style.top = `${centerY - noBtn.offsetHeight/2}px`;
 });
 </script>
 </body>
