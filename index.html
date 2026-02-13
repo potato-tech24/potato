@@ -17,7 +17,7 @@ body {
 }
 h1 { font-size:42px; color:#667eea; margin-bottom:20px; }
 .question { font-size:28px; margin-bottom:40px; font-weight:bold; }
-.gif-container { width:250px; height:250px; margin:0 auto 30px; border-radius:20px; overflow:hidden; border:5px solid #667eea; }
+.gif-container { width:250px; height:250px; margin:0 auto 30px; border-radius:20px; overflow:hidden; border:5px solid #667eea; position:relative; }
 .gif-container img { width:100%; height:100%; object-fit:cover; }
 
 .buttons { position:relative; height:200px; }
@@ -30,16 +30,17 @@ h1 { font-size:42px; color:#667eea; margin-bottom:20px; }
     color:white; top:50%; left:50%; transform:translate(-50%,-50%);
 }
 #noBtn {
-    background:#ff6b6b; color:white; top:10px; left:10px;
+    background:#ff6b6b; color:white; top:0; left:0;
 }
 #noBtn:hover { background:#ff5252; }
+
 .success { display:none; text-align:center; }
 .emoji { font-size:80px; margin-bottom:20px; }
 </style>
 </head>
 <body>
 <div class="container" id="questionBox">
-    <div class="gif-container">
+    <div class="gif-container" id="gifContainer">
         <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExcXV5eWR6anBsaWN6M3lneHN5dGxxY2t0eXR5N3J2bGNocGd5eTFkdCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/MDJ9IbxxvDUQM/giphy.gif" alt="Cute asking gif">
     </div>
     <h1>Hey There! 💕</h1>
@@ -59,35 +60,41 @@ h1 { font-size:42px; color:#667eea; margin-bottom:20px; }
 <script>
 let yesBtn=document.getElementById('yesBtn');
 let noBtn=document.getElementById('noBtn');
+let gifContainer=document.getElementById('gifContainer');
+
 let attempts=0;
-let yesFontSize=22; // starting font size in px
+let yesFontSize=22;
+let angle=0; // for orbit movement
 
 function moveButton(){
     attempts++;
-
-    // Move NO button to the center (without covering YES)
-    const container=document.querySelector('.buttons');
-    const containerRect=container.getBoundingClientRect();
-
-    // Center horizontally
-    let centerX = (containerRect.width - noBtn.offsetWidth)/2;
-    // Position above YES button
-    let centerY = (containerRect.height/2) - noBtn.offsetHeight - 10; // 10px gap
-
-    if(centerY<0) centerY=0;
-    noBtn.style.left=centerX+'px';
-    noBtn.style.top=centerY+'px';
 
     // Grow YES button gradually
     yesFontSize += 3;
     yesBtn.style.fontSize = yesFontSize + 'px';
     yesBtn.style.padding = `${15 + attempts*2}px ${30 + attempts*3}px`;
 
-    // Shrink NO button slightly to make it feel playful
+    // Orbit NO button around the GIF
+    const rect = gifContainer.getBoundingClientRect();
+    const containerRect = gifContainer.parentElement.getBoundingClientRect();
+    const centerX = rect.left + rect.width/2 - containerRect.left;
+    const centerY = rect.top + rect.height/2 - containerRect.top;
+
+    const radius = rect.width/2 + 40; // distance from center
+    angle += 45 + Math.random()*30; // change angle randomly
+    const rad = angle * Math.PI/180;
+
+    const noX = centerX + radius*Math.cos(rad) - noBtn.offsetWidth/2;
+    const noY = centerY + radius*Math.sin(rad) - noBtn.offsetHeight/2;
+
+    noBtn.style.left = `${noX}px`;
+    noBtn.style.top = `${noY}px`;
+
+    // Shrink NO slightly
     const scale = Math.max(0.6, 1 - attempts*0.05);
     noBtn.style.transform=`scale(${scale})`;
 
-    // Change NO button text for fun
+    // Change NO button text
     const texts=['No 😢','Are you sure? 🥺','Really? 😭','Think again! 💔','Please? 🙏','Pretty please? 🥺','Just say yes! 😊','Come on! 💝'];
     if(attempts<texts.length) noBtn.innerHTML=texts[attempts];
 }
