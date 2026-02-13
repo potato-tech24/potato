@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Will You Be My Wedding Date? 💍</title>
+    <title>Will You Be My Valentine? 💍</title>
     <style>
         * {
             margin: 0;
@@ -142,8 +142,7 @@
     transition: all 0.2s ease;
     box-shadow: 0 10px 30px rgba(255, 107, 107, 0.4);
     font-family: 'Comic Sans MS', cursive;
-    z-index: -1;
-    pointer-events: auto;
+
 }
 
         #noBtn:hover {
@@ -229,44 +228,56 @@
         let noBtn = document.getElementById('noBtn');
         let yesBtnSize = 24;
         let attempts = 0;
+        let noBtnScale = 1;
 
         function moveButton() {
-            attempts++;
-            
-            // Make YES button bigger
-            yesBtnSize += 10;
-            yesBtn.style.fontSize = yesBtnSize + 'px';
-            yesBtn.style.padding = (20 + attempts * 5) + 'px ' + (40 + attempts * 10) + 'px';
-            
-            // Move NO button randomly
-            let container = document.querySelector('.buttons');
-            let containerRect = container.getBoundingClientRect();
-            
-            let maxX = containerRect.width - noBtn.offsetWidth - 40;
-            let maxY = 100;
-            
-            let randomX = Math.random() * maxX;
-            let randomY = Math.random() * maxY - 50;
-            
-            noBtn.style.left = randomX + 'px';
-            noBtn.style.top = randomY + 'px';
-            
-            // Change NO button text
-            const noTexts = [
-                'No 😢',
-                'Are you sure? 🥺',
-                'Really? 😭',
-                'Think again! 💔',
-                'Please? 🙏',
-                'Pretty please? 🥹',
-                'Just say yes! 😊',
-                'Come on! 💝'
-            ];
-            
-            if (attempts < noTexts.length) {
-                noBtn.innerHTML = noTexts[attempts];
-            }
-        }
+    attempts++;
+
+    const buttons = document.querySelector('.buttons');
+    const yesRect = yesBtn.getBoundingClientRect();
+    const containerRect = buttons.getBoundingClientRect();
+
+    /* 🔽 Shrink NO button every time */
+    noBtnScale -= 0.08;
+    if (noBtnScale < 0.4) noBtnScale = 0.4; // minimum size
+    noBtn.style.transform = `scale(${noBtnScale})`;
+
+    /* 🔒 Movement limits */
+    const padding = 10;
+
+    const minY =
+        yesRect.bottom - containerRect.top + padding; // BELOW YES only
+
+    const maxY =
+        containerRect.height - noBtn.offsetHeight - padding;
+
+    const maxX =
+        containerRect.width - noBtn.offsetWidth - padding;
+
+    const randomX = Math.random() * maxX;
+    const randomY =
+        minY + Math.random() * (maxY - minY);
+
+    noBtn.style.left = `${randomX}px`;
+    noBtn.style.top = `${randomY}px`;
+
+    /* Change NO text */
+    const noTexts = [
+        'No 😢',
+        'Are you sure? 🥺',
+        'Really? 😭',
+        'Think again! 💔',
+        'Please? 🙏',
+        'Pretty please? 🥹',
+        'Just say yes! 😊',
+        'Come on! 💝'
+    ];
+
+    if (attempts < noTexts.length) {
+        noBtn.innerHTML = noTexts[attempts];
+    }
+}
+        
 
         function sayYes() {
             document.getElementById('questionBox').style.display = 'none';
