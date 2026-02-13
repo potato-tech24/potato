@@ -68,7 +68,8 @@ function moveButton(){
     const container=document.querySelector('.buttons');
     const containerRect=container.getBoundingClientRect();
 
-    const scale=1 - Math.min(0.5, attempts*0.05); // shrink gradually
+    // Shrink NO gradually
+    const scale=Math.max(0.4,1 - attempts*0.05);
     noBtn.style.transform=`scale(${scale})`;
 
     const noWidth=noBtn.offsetWidth*scale;
@@ -78,8 +79,9 @@ function moveButton(){
     const maxX=containerRect.width - noWidth - padding;
     const maxY=containerRect.height - noHeight - padding;
 
+    // Move NO toward top
     const randomX=Math.random()*maxX;
-    const randomY=Math.random()*maxY;
+    const randomY=Math.random()* (maxY*0.5); // only upper half
 
     noBtn.style.left=randomX+'px';
     noBtn.style.top=randomY+'px';
