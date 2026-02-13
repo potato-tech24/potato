@@ -45,16 +45,24 @@ h1 { font-size:36px; color:#667eea; margin:20px 0; }
 .gif-container { width:200px; height:200px; margin:0 auto 20px; border-radius:20px; overflow:hidden; border:5px solid #667eea; position:relative; }
 .gif-container img { width:100%; height:100%; object-fit:cover; }
 
+.buttons-container {
+    display:flex;
+    justify-content:center;
+    gap:20px;
+    margin-top:20px;
+    position:relative;
+}
+
 #yesBtn, #noBtn {
     padding:12px 25px; font-size:20px; border-radius:50px; font-weight:bold; border:none; cursor:pointer;
-    font-family:'Comic Sans MS', cursive; position:absolute; transition: all 0.3s ease;
+    font-family:'Comic Sans MS', cursive; transition: all 0.3s ease;
 }
 #yesBtn {
     background: linear-gradient(135deg,#667eea 0%,#764ba2 100%);
-    color:white; bottom:20px; left:50%; transform:translateX(-50%);
+    color:white;
 }
 #noBtn {
-    background:#ff6b6b; color:white; top:0; left:50%; transform:translateX(-50%);
+    background:#ff6b6b; color:white;
 }
 #noBtn:hover { background:#ff5252; }
 
@@ -69,9 +77,14 @@ h1 { font-size:36px; color:#667eea; margin:20px 0; }
     <div class="gif-container" id="gifContainer">
         <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExcXV5eWR6anBsaWN6M3lneHN5dGxxY2t0eXR5N3J2bGNocGd5eTFkdCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/MDJ9IbxxvDUQM/giphy.gif" alt="Cute asking gif">
     </div>
-    <button id="noBtn" onclick="moveButton()">No 😢</button>
+
     <h1>Will you be my Valentine? 🥺👉👈</h1>
-    <button id="yesBtn" onclick="sayYes()">YES! 💖</button>
+
+    <!-- Buttons aligned properly at start -->
+    <div class="buttons-container">
+        <button id="yesBtn" onclick="sayYes()">YES! 💖</button>
+        <button id="noBtn" onclick="moveButton()">No 😢</button>
+    </div>
 </div>
 
 <div class="container success" id="successBox">
@@ -123,6 +136,7 @@ function moveButton(){
     const noX = centerX + radius * Math.cos(rad) - noBtn.offsetWidth/2;
     const noY = centerY + radius * Math.sin(rad) - noBtn.offsetHeight/2;
 
+    noBtn.style.position = 'absolute';
     noBtn.style.left = `${noX}px`;
     noBtn.style.top = `${Math.min(noY, rect.top - containerRect.top)}px`;
 
@@ -140,18 +154,10 @@ function sayYes(){
     document.getElementById('successBox').style.display='block';
 }
 
-// Initial positions for mobile view
+// Initial positions
 window.addEventListener('load', ()=>{
-    const rect = gifContainer.getBoundingClientRect();
-    const containerRect = gifContainer.parentElement.getBoundingClientRect();
-    const centerX = rect.left + rect.width/2 - containerRect.left;
-    const centerY = rect.top + rect.height/2 - containerRect.top - 50;
-    noBtn.style.left = `${centerX - noBtn.offsetWidth/2}px`;
-    noBtn.style.top = `${centerY - noBtn.offsetHeight/2}px`;
-
-    yesBtn.style.bottom = '20px';
-    yesBtn.style.left = '50%';
-    yesBtn.style.transform = 'translateX(-50%)';
+    yesBtn.style.fontSize = yesFontSize + 'px';
+    yesBtn.style.padding = '12px 25px';
 });
 </script>
 </body>
