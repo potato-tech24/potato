@@ -6,7 +6,6 @@
 <title>Will You Be My Valentine? 💍</title>
 <style>
 * { margin:0; padding:0; box-sizing:border-box; }
-
 body {
     font-family: 'Comic Sans MS', cursive, sans-serif;
     background: linear-gradient(135deg,#667eea 0%,#764ba2 100%);
@@ -14,29 +13,19 @@ body {
     flex-direction:column; align-items:center; justify-content:center;
     overflow:hidden; position:relative;
 }
-
-.heart {
-    position:absolute; font-size:30px; animation:float 6s infinite; opacity:0.6;
-}
-
+.heart { position:absolute; font-size:30px; animation:float 6s infinite; opacity:0.6; }
 @keyframes float {
     0% { transform:translateY(100vh) rotate(0deg); opacity:0; }
     50% { opacity:0.6; }
     100% { transform:translateY(-100vh) rotate(360deg); opacity:0; }
 }
-
 .container {
     background:white; padding:60px 40px;
     border-radius:30px; box-shadow:0 20px 60px rgba(0,0,0,0.3);
     text-align:center; max-width:600px; position:relative; z-index:10;
-    animation:bounce-in 0.6s ease-out;
+    animation:bounce-in 0.6s ease-out; width:90%;
 }
-
-@keyframes bounce-in {
-    0% { transform:scale(0.3); opacity:0; }
-    50% { transform:scale(1.05); }
-    100% { transform:scale(1); opacity:1; }
-}
+@keyframes bounce-in { 0% { transform:scale(0.3); opacity:0; } 50% { transform:scale(1.05); } 100% { transform:scale(1); opacity:1; } }
 
 .gif-container { width:250px; height:250px; margin:0 auto 30px; border-radius:20px; overflow:hidden; border:5px solid #667eea; box-shadow:0 10px 30px rgba(0,0,0,0.2); }
 .gif-container img { width:100%; height:100%; object-fit:cover; }
@@ -67,7 +56,6 @@ h1 { font-size:42px; color:#667eea; margin-bottom:20px; text-shadow:2px 2px 4px 
 .success p { font-size:24px; color:#333; }
 .emoji { font-size:80px; animation:spin 2s linear infinite; }
 @keyframes spin { 0%{transform:rotate(0deg);} 100%{transform:rotate(360deg);} }
-
 </style>
 </head>
 <body>
@@ -95,7 +83,7 @@ h1 { font-size:42px; color:#667eea; margin-bottom:20px; text-shadow:2px 2px 4px 
 
 <script>
 // Floating hearts
-for (let i=0;i<15;i++){
+for(let i=0;i<15;i++){
     let heart=document.createElement('div');
     heart.className='heart'; heart.innerHTML='💕';
     heart.style.left=Math.random()*100+'%';
@@ -113,8 +101,7 @@ let noBtnScale=1;
 function moveButton(){
     attempts++;
 
-    const container=document.getElementById('questionBox'); 
-    const yesRect=yesBtn.getBoundingClientRect();
+    const container=document.getElementById('questionBox');
     const containerRect=container.getBoundingClientRect();
 
     // Grow YES button
@@ -129,44 +116,30 @@ function moveButton(){
 
     const padding=10;
 
-    // Compute NO button actual size
+    // Actual scaled size of NO
     const noWidth=noBtn.offsetWidth * noBtnScale;
     const noHeight=noBtn.offsetHeight * noBtnScale;
 
-    // Horizontal movement limit
-    const maxX = containerRect.width - noWidth - padding;
-    const randomX = Math.random() * maxX;
-
-    // Vertical movement limit (below YES)
-    const minY = yesRect.bottom - containerRect.top + padding;
-    const maxY = containerRect.height - noHeight - padding;
-    const randomY = minY + Math.random() * Math.max(0, maxY - minY);
+    // Random position within container bounds
+    const maxX=containerRect.width - noWidth - padding;
+    const maxY=containerRect.height - noHeight - padding;
+    const randomX=Math.random()*maxX;
+    const randomY=Math.random()*maxY;
 
     noBtn.style.left=randomX+'px';
     noBtn.style.top=randomY+'px';
 
-    // Change NO button text
+    // Change text
     const noTexts=[
-        'No 😢',
-        'Are you sure? 🥺',
-        'Really? 😭',
-        'Think again! 💔',
-        'Please? 🙏',
-        'Pretty please? 🥺👉👈',
-        'Just say yes! 😊',
-        'Come on! 💝'
+        'No 😢','Are you sure? 🥺','Really? 😭','Think again! 💔',
+        'Please? 🙏','Pretty please? 🥺👉👈','Just say yes! 😊','Come on! 💝'
     ];
-
-    if(attempts<noTexts.length){
-        noBtn.innerHTML=noTexts[attempts];
-    }
+    if(attempts<noTexts.length) noBtn.innerHTML=noTexts[attempts];
 }
 
 function sayYes(){
     document.getElementById('questionBox').style.display='none';
     document.getElementById('successBox').style.display='block';
-
-    // Confetti
     for(let i=0;i<100;i++) createConfetti();
 }
 
@@ -185,11 +158,9 @@ function createConfetti(){
 // Initial NO position
 window.addEventListener('load',()=>{
     const container=document.getElementById('questionBox');
-    const yesRect=yesBtn.getBoundingClientRect();
     const containerRect=container.getBoundingClientRect();
-
     noBtn.style.left='10px';
-    noBtn.style.top=(yesRect.bottom - containerRect.top + 20)+'px';
+    noBtn.style.top='10px';
 });
 </script>
 </body>
