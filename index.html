@@ -12,22 +12,21 @@ body {
     min-height:100vh; display:flex; justify-content:center; align-items:center; overflow:hidden;
 }
 .container {
-    background:white; padding:60px 40px; border-radius:30px; max-width:600px; width:90%;
+    background:white; padding:40px; border-radius:30px; max-width:600px; width:90%;
     text-align:center; position:relative; box-shadow:0 20px 60px rgba(0,0,0,0.3);
 }
-h1 { font-size:42px; color:#667eea; margin-bottom:20px; }
-.question { font-size:28px; margin-bottom:40px; font-weight:bold; }
-.gif-container { width:250px; height:250px; margin:0 auto 30px; border-radius:20px; overflow:hidden; border:5px solid #667eea; position:relative; }
+h1 { font-size:36px; color:#667eea; margin:20px 0; }
+.question { font-size:22px; margin-bottom:40px; font-weight:bold; }
+.gif-container { width:200px; height:200px; margin:0 auto; border-radius:20px; overflow:hidden; border:5px solid #667eea; position:relative; }
 .gif-container img { width:100%; height:100%; object-fit:cover; }
 
-.buttons { position:relative; height:200px; }
 #yesBtn, #noBtn {
-    padding:15px 30px; font-size:22px; border-radius:50px; font-weight:bold; border:none; cursor:pointer;
+    padding:12px 25px; font-size:20px; border-radius:50px; font-weight:bold; border:none; cursor:pointer;
     font-family:'Comic Sans MS', cursive; position:absolute; transition: all 0.3s ease;
 }
 #yesBtn {
     background: linear-gradient(135deg,#667eea 0%,#764ba2 100%);
-    color:white; top:50%; left:50%; transform:translate(-50%,-50%);
+    color:white; bottom:20px; left:50%; transform:translateX(-50%);
 }
 #noBtn {
     background:#ff6b6b; color:white; top:0; left:0;
@@ -35,7 +34,7 @@ h1 { font-size:42px; color:#667eea; margin-bottom:20px; }
 #noBtn:hover { background:#ff5252; }
 
 .success { display:none; text-align:center; }
-.emoji { font-size:80px; margin-bottom:20px; }
+.emoji { font-size:60px; margin-bottom:20px; }
 </style>
 </head>
 <body>
@@ -43,12 +42,9 @@ h1 { font-size:42px; color:#667eea; margin-bottom:20px; }
     <div class="gif-container" id="gifContainer">
         <img src="https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExcXV5eWR6anBsaWN6M3lneHN5dGxxY2t0eXR5N3J2bGNocGd5eTFkdCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/MDJ9IbxxvDUQM/giphy.gif" alt="Cute asking gif">
     </div>
-    <h1>Hey There! 💕</h1>
-    <p class="question">Will you be my valentine? 🥺👉👈</p>
-    <div class="buttons">
-        <button id="yesBtn" onclick="sayYes()">YES! 💖</button>
-        <button id="noBtn" onclick="moveButton()">No 😢</button>
-    </div>
+    <button id="noBtn" onclick="moveButton()">No 😢</button>
+    <h1>Will you be my Valentine? 🥺👉👈</h1>
+    <button id="yesBtn" onclick="sayYes()">YES! 💖</button>
 </div>
 
 <div class="container success" id="successBox">
@@ -63,38 +59,38 @@ let noBtn=document.getElementById('noBtn');
 let gifContainer=document.getElementById('gifContainer');
 
 let attempts=0;
-let yesFontSize=22;
-let angle=0; // for orbit movement
+let yesFontSize=20;
+let angle=0;
 
 function moveButton(){
     attempts++;
 
     // Grow YES button gradually
-    yesFontSize += 3;
+    yesFontSize += 2;
     yesBtn.style.fontSize = yesFontSize + 'px';
-    yesBtn.style.padding = `${15 + attempts*2}px ${30 + attempts*3}px`;
+    yesBtn.style.padding = `${12 + attempts}px ${25 + attempts*2}px`;
 
-    // Orbit NO button around the GIF
+    // Orbit NO button around GIF but always **above heading**
     const rect = gifContainer.getBoundingClientRect();
     const containerRect = gifContainer.parentElement.getBoundingClientRect();
     const centerX = rect.left + rect.width/2 - containerRect.left;
-    const centerY = rect.top + rect.height/2 - containerRect.top;
+    const centerY = rect.top + rect.height/2 - containerRect.top - 50; // shift upwards to stay above heading
 
-    const radius = rect.width/2 + 40; // distance from center
-    angle += 45 + Math.random()*30; // change angle randomly
+    const radius = rect.width/2 + 20;
+    angle += 45 + Math.random()*20;
     const rad = angle * Math.PI/180;
 
-    const noX = centerX + radius*Math.cos(rad) - noBtn.offsetWidth/2;
-    const noY = centerY + radius*Math.sin(rad) - noBtn.offsetHeight/2;
+    const noX = centerX + radius * Math.cos(rad) - noBtn.offsetWidth/2;
+    const noY = centerY + radius * Math.sin(rad) - noBtn.offsetHeight/2;
 
     noBtn.style.left = `${noX}px`;
-    noBtn.style.top = `${noY}px`;
+    noBtn.style.top = `${Math.min(noY, rect.top - containerRect.top)}px`; // never below heading
 
     // Shrink NO slightly
-    const scale = Math.max(0.6, 1 - attempts*0.05);
-    noBtn.style.transform=`scale(${scale})`;
+    const scale = Math.max(0.7, 1 - attempts*0.05);
+    noBtn.style.transform = `scale(${scale})`;
 
-    // Change NO button text
+    // Change NO text
     const texts=['No 😢','Are you sure? 🥺','Really? 😭','Think again! 💔','Please? 🙏','Pretty please? 🥺','Just say yes! 😊','Come on! 💝'];
     if(attempts<texts.length) noBtn.innerHTML=texts[attempts];
 }
@@ -104,10 +100,14 @@ function sayYes(){
     document.getElementById('successBox').style.display='block';
 }
 
-// initial position
+// initial position for mobile
 window.addEventListener('load', ()=>{
-    noBtn.style.left='10px';
-    noBtn.style.top='10px';
+    const rect = gifContainer.getBoundingClientRect();
+    const containerRect = gifContainer.parentElement.getBoundingClientRect();
+    const centerX = rect.left + rect.width/2 - containerRect.left;
+    const centerY = rect.top + rect.height/2 - containerRect.top - 50;
+    noBtn.style.left = `${centerX - noBtn.offsetWidth/2}px`;
+    noBtn.style.top = `${centerY - noBtn.offsetHeight/2}px`;
 });
 </script>
 </body>
