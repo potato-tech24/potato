@@ -237,6 +237,11 @@
     const yesRect = yesBtn.getBoundingClientRect();
     const containerRect = container.getBoundingClientRect();
 
+    /* 🔼 Grow YES button */
+    yesBtnSize += 4; // increase font size gradually
+    yesBtn.style.fontSize = yesBtnSize + 'px';
+    yesBtn.style.padding = `${20 + attempts * 2}px ${40 + attempts * 4}px`;
+
     /* 🔽 Shrink NO button */
     noBtnScale -= 0.08;
     if (noBtnScale < 0.4) noBtnScale = 0.4;
@@ -244,36 +249,27 @@
 
     const padding = 15;
 
-    /* ✅ Horizontal movement */
-    const maxX =
-        containerRect.width - noBtn.offsetWidth - padding;
-
+    /* ✅ Horizontal movement of NO */
+    const maxX = containerRect.width - noBtn.offsetWidth - padding;
     const randomX = Math.random() * maxX;
 
-    /* ✅ Vertical movement (ALWAYS below YES) */
-    const minY =
-        yesRect.bottom - containerRect.top + padding;
-
-    const maxY =
-        containerRect.height - noBtn.offsetHeight - padding;
-
-    // SAFETY CHECK (this was missing ❌)
+    /* ✅ Vertical movement of NO (always below YES) */
+    const minY = yesRect.bottom - containerRect.top + padding;
+    const maxY = containerRect.height - noBtn.offsetHeight - padding;
     const safeMaxY = Math.max(minY, maxY);
-
-    const randomY =
-        minY + Math.random() * (safeMaxY - minY);
+    const randomY = minY + Math.random() * (safeMaxY - minY);
 
     noBtn.style.left = `${randomX}px`;
     noBtn.style.top = `${randomY}px`;
 
-    /* Change text */
+    /* Change NO button text */
     const noTexts = [
         'No 😢',
         'Are you sure? 🥺',
         'Really? 😭',
         'Think again! 💔',
         'Please? 🙏',
-        'Pretty please? 🥹',
+        'Pretty please? 🙏💝',
         'Just say yes! 😊',
         'Come on! 💝'
     ];
