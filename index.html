@@ -233,35 +233,40 @@
         function moveButton() {
     attempts++;
 
-    const buttons = document.querySelector('.buttons');
+    const container = document.getElementById('questionBox');
     const yesRect = yesBtn.getBoundingClientRect();
-    const containerRect = buttons.getBoundingClientRect();
+    const containerRect = container.getBoundingClientRect();
 
-    /* 🔽 Shrink NO button every time */
+    /* 🔽 Shrink NO button */
     noBtnScale -= 0.08;
-    if (noBtnScale < 0.4) noBtnScale = 0.4; // minimum size
+    if (noBtnScale < 0.4) noBtnScale = 0.4;
     noBtn.style.transform = `scale(${noBtnScale})`;
 
-    /* 🔒 Movement limits */
-    const padding = 10;
+    const padding = 15;
 
-    const minY =
-        yesRect.bottom - containerRect.top + padding; // BELOW YES only
-
-    const maxY =
-        containerRect.height - noBtn.offsetHeight - padding;
-
+    /* ✅ Horizontal movement */
     const maxX =
         containerRect.width - noBtn.offsetWidth - padding;
 
     const randomX = Math.random() * maxX;
+
+    /* ✅ Vertical movement (ALWAYS below YES) */
+    const minY =
+        yesRect.bottom - containerRect.top + padding;
+
+    const maxY =
+        containerRect.height - noBtn.offsetHeight - padding;
+
+    // SAFETY CHECK (this was missing ❌)
+    const safeMaxY = Math.max(minY, maxY);
+
     const randomY =
-        minY + Math.random() * (maxY - minY);
+        minY + Math.random() * (safeMaxY - minY);
 
     noBtn.style.left = `${randomX}px`;
     noBtn.style.top = `${randomY}px`;
 
-    /* Change NO text */
+    /* Change text */
     const noTexts = [
         'No 😢',
         'Are you sure? 🥺',
