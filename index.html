@@ -233,12 +233,12 @@
         function moveButton() {
     attempts++;
 
-    const container = document.getElementById('questionBox');
+    const container = document.querySelector('.buttons'); // buttons container
     const yesRect = yesBtn.getBoundingClientRect();
     const containerRect = container.getBoundingClientRect();
 
     /* 🔼 Grow YES button */
-    yesBtnSize += 4; // increase font size gradually
+    yesBtnSize += 4;
     yesBtn.style.fontSize = yesBtnSize + 'px';
     yesBtn.style.padding = `${20 + attempts * 2}px ${40 + attempts * 4}px`;
 
@@ -247,17 +247,20 @@
     if (noBtnScale < 0.4) noBtnScale = 0.4;
     noBtn.style.transform = `scale(${noBtnScale})`;
 
-    const padding = 15;
+    const padding = 10;
 
-    /* ✅ Horizontal movement of NO */
-    const maxX = containerRect.width - noBtn.offsetWidth - padding;
+    // Compute NO button scaled size
+    const noWidth = noBtn.offsetWidth * noBtnScale;
+    const noHeight = noBtn.offsetHeight * noBtnScale;
+
+    // Horizontal limit inside container
+    const maxX = containerRect.width - noWidth - padding;
     const randomX = Math.random() * maxX;
 
-    /* ✅ Vertical movement of NO (always below YES) */
+    // Vertical limit: always BELOW YES button
     const minY = yesRect.bottom - containerRect.top + padding;
-    const maxY = containerRect.height - noBtn.offsetHeight - padding;
-    const safeMaxY = Math.max(minY, maxY);
-    const randomY = minY + Math.random() * (safeMaxY - minY);
+    const maxY = containerRect.height - noHeight - padding;
+    const randomY = minY + Math.random() * Math.max(0, maxY - minY);
 
     noBtn.style.left = `${randomX}px`;
     noBtn.style.top = `${randomY}px`;
@@ -269,7 +272,7 @@
         'Really? 😭',
         'Think again! 💔',
         'Please? 🙏',
-        'Pretty please? 🙏💝',
+        'Pretty please? 🥺👉👈',
         'Just say yes! 😊',
         'Come on! 💝'
     ];
