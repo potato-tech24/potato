@@ -28,10 +28,11 @@ h1 { font-size:42px; color:#667eea; margin-bottom:20px; }
 #yesBtn {
     background: linear-gradient(135deg,#667eea 0%,#764ba2 100%);
     color:white; top:50%; left:50%; transform:translate(-50%,-50%);
+    transition: all 0.3s ease;
 }
 #yesBtn:hover { transform:translate(-50%,-50%) scale(1.05); }
 #noBtn {
-    background:#ff6b6b; color:white; top:10px; left:10px; transition:0.2s;
+    background:#ff6b6b; color:white; top:10px; left:10px; transition: all 0.2s ease;
 }
 #noBtn:hover { background:#ff5252; }
 
@@ -62,13 +63,20 @@ h1 { font-size:42px; color:#667eea; margin-bottom:20px; }
 let yesBtn=document.getElementById('yesBtn');
 let noBtn=document.getElementById('noBtn');
 let attempts=0;
+let yesFontSize=22; // starting font size in px
 
 function moveButton(){
     attempts++;
     const container=document.querySelector('.buttons');
     const containerRect=container.getBoundingClientRect();
+    const yesRect=yesBtn.getBoundingClientRect();
 
-    // Shrink NO gradually
+    // 🔼 Grow YES button gradually
+    yesFontSize += 2;
+    yesBtn.style.fontSize = yesFontSize+'px';
+    yesBtn.style.padding = `${15 + attempts}px ${30 + attempts*2}px`;
+
+    // 🔽 Shrink NO button gradually
     const scale=Math.max(0.4,1 - attempts*0.05);
     noBtn.style.transform=`scale(${scale})`;
 
@@ -77,15 +85,18 @@ function moveButton(){
 
     const padding=5;
     const maxX=containerRect.width - noWidth - padding;
-    const maxY=containerRect.height - noHeight - padding;
+    let maxY=containerRect.height - noHeight - padding;
 
-    // Move NO toward top
+    // Make NO button move only above YES button
+    let topLimit = yesRect.top - containerRect.top - noHeight - padding;
+    if(topLimit < 0) topLimit=0; // cannot go outside top
     const randomX=Math.random()*maxX;
-    const randomY=Math.random()* (maxY*0.5); // only upper half
+    const randomY=Math.random()*topLimit;
 
     noBtn.style.left=randomX+'px';
     noBtn.style.top=randomY+'px';
 
+    // Change NO button text
     const texts=['No 😢','Are you sure? 🥺','Really? 😭','Think again! 💔','Please? 🙏','Pretty please? 🥺','Just say yes! 😊','Come on! 💝'];
     if(attempts<texts.length) noBtn.innerHTML=texts[attempts];
 }
@@ -94,6 +105,12 @@ function sayYes(){
     document.getElementById('questionBox').style.display='none';
     document.getElementById('successBox').style.display='block';
 }
+
+// initial position
+window.addEventListener('load', ()=>{
+    noBtn.style.left='10px';
+    noBtn.style.top='10px';
+});
 </script>
 </body>
 </html>
